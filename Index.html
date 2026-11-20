@@ -1,0 +1,1595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>For Prema 🤍</title>
+
+  <!-- Optional elegant serif + sans fonts with instant system fallbacks -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* =========================================================
+       1. BASE RESET & MOBILE-FIRST SINGLE-SCREEN LAYOUT
+       ========================================================= */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100dvh;
+      min-height: 100vh;
+      overflow: hidden;
+      background-color: #120d21;
+      color: #fbf6f4;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    button {
+      font-family: inherit;
+      color: inherit;
+      border: none;
+      background: none;
+      cursor: pointer;
+      outline: none;
+    }
+
+    /* =========================================================
+       2. DEEP TWILIGHT PLUM/MIDNIGHT AMBIENT BACKGROUND
+       ========================================================= */
+    .twilight-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      background: radial-gradient(circle at 24% 18%, #291b40 0%, #161028 54%, #0d0919 100%);
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 9999px;
+      filter: blur(80px);
+      opacity: 0.52;
+      will-change: transform;
+      pointer-events: none;
+    }
+
+    .orb-lavender {
+      width: 72vw;
+      height: 72vw;
+      max-width: 520px;
+      max-height: 520px;
+      top: -18%;
+      right: -16%;
+      background: radial-gradient(circle, rgba(178, 146, 238, 0.6) 0%, rgba(178, 146, 238, 0) 70%);
+      animation: driftA 20s ease-in-out infinite alternate;
+    }
+
+    .orb-peach {
+      width: 68vw;
+      height: 68vw;
+      max-width: 500px;
+      max-height: 500px;
+      bottom: -20%;
+      left: -14%;
+      background: radial-gradient(circle, rgba(244, 174, 162, 0.54) 0%, rgba(244, 174, 162, 0) 70%);
+      animation: driftB 24s ease-in-out infinite alternate;
+    }
+
+    .orb-warm {
+      width: 54vw;
+      height: 54vw;
+      max-width: 420px;
+      max-height: 420px;
+      top: 34%;
+      left: 34%;
+      background: radial-gradient(circle, rgba(248, 194, 158, 0.36) 0%, rgba(248, 194, 158, 0) 72%);
+      animation: driftC 18s ease-in-out infinite alternate;
+    }
+
+    @keyframes driftA {
+      0%   { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-10%, 12%) scale(1.08); }
+    }
+
+    @keyframes driftB {
+      0%   { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(12%, -10%) scale(1.1); }
+    }
+
+    @keyframes driftC {
+      0%   { transform: translate(0, 0) scale(0.95); }
+      100% { transform: translate(-12%, -8%) scale(1.08); }
+    }
+
+    /* Full-screen particle canvas overlay */
+    #fxCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    /* =========================================================
+       3. TOP-RIGHT FROSTED GLASS CONTROLS
+       ========================================================= */
+    .top-controls {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .icon-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.85);
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(18px) saturate(140%);
+      -webkit-backdrop-filter: blur(18px) saturate(140%);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow:
+        0 8px 20px -8px rgba(6, 4, 18, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.24);
+      transition: transform 0.2s ease, background-color 0.2s ease, opacity 0.3s ease;
+    }
+
+    .icon-btn:hover {
+      background: rgba(255, 255, 255, 0.17);
+    }
+
+    .icon-btn:active {
+      transform: scale(0.92);
+    }
+
+    .icon-btn.hidden {
+      display: none;
+    }
+
+    .icon-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* =========================================================
+       4. MAIN STAGE CONTAINER & RELIABLE STAGE VISIBILITY
+       ========================================================= */
+    .app-shell {
+      position: relative;
+      z-index: 20;
+      width: 100%;
+      height: 100dvh;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    /* Only .stage.active is shown; Stage 1 has .active in HTML by default */
+    .stage {
+      display: none;
+      width: 100%;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .stage.active {
+      display: flex;
+      animation: stageFadeIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    @keyframes stageFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.97);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* =========================================================
+       5. STAGE 1: QUICK INTRO (IMMEDIATELY VISIBLE ON LOAD)
+       ========================================================= */
+    #stageIntro {
+      max-width: 360px;
+      min-height: 60vh;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .intro-title {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+      font-size: clamp(2rem, 8vw, 2.65rem);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: #fff9f5;
+      text-shadow: 0 0 28px rgba(248, 200, 180, 0.45);
+    }
+
+    .intro-subtitle {
+      margin: 14px 0 0;
+      font-size: clamp(0.95rem, 3.8vw, 1.08rem);
+      font-weight: 300;
+      line-height: 1.5;
+      color: rgba(255, 244, 240, 0.78);
+      letter-spacing: 0.02em;
+    }
+
+    .intro-hint {
+      position: fixed;
+      bottom: 34px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.75rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.48);
+      animation: gentlePulse 2.2s ease-in-out infinite;
+    }
+
+    @keyframes gentlePulse {
+      0%, 100% { opacity: 0.45; }
+      50%      { opacity: 0.92; }
+    }
+
+    /* =========================================================
+       6. STAGE 2: 3D-STYLED FROSTED-GLASS GIFT BOX
+       ========================================================= */
+    #stageGift {
+      max-width: 320px;
+    }
+
+    .gift-scene {
+      perspective: 900px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 0 10px;
+    }
+
+    .gift-box {
+      position: relative;
+      width: 170px;
+      height: 170px;
+      cursor: pointer;
+      transform-style: preserve-3d;
+      animation: giftFloat 3.6s ease-in-out infinite;
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.45s ease;
+    }
+
+    .gift-box:hover {
+      transform: translateY(-4px) scale(1.03);
+    }
+
+    @keyframes giftFloat {
+      0%, 100% { transform: translateY(0px); }
+      50%      { transform: translateY(-10px); }
+    }
+
+    /* Playful anticipation wiggle on tap */
+    .gift-box.wiggle {
+      animation: giftWiggle 0.32s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
+      pointer-events: none;
+    }
+
+    @keyframes giftWiggle {
+      0%   { transform: scale(1) rotate(0deg); }
+      25%  { transform: scale(0.93, 1.06) rotate(-6deg); }
+      55%  { transform: scale(1.07, 0.92) rotate(6deg); }
+      80%  { transform: scale(0.97, 1.04) rotate(-3deg); }
+      100% { transform: scale(1.04, 0.96) rotate(0deg); }
+    }
+
+    /* Warm halo behind gift */
+    .gift-halo {
+      position: absolute;
+      inset: -34px;
+      border-radius: 9999px;
+      background: radial-gradient(circle, rgba(248, 196, 174, 0.44) 0%, rgba(196, 160, 238, 0.22) 52%, transparent 74%);
+      filter: blur(22px);
+      transition: transform 0.55s ease, opacity 0.55s ease;
+      pointer-events: none;
+    }
+
+    /* Soft shadow beneath floating box */
+    .gift-shadow {
+      position: absolute;
+      bottom: -26px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 122px;
+      height: 18px;
+      border-radius: 9999px;
+      background: radial-gradient(ellipse at center, rgba(6, 3, 15, 0.65) 0%, transparent 72%);
+      animation: shadowBreath 3.6s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes shadowBreath {
+      0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.72; }
+      50%      { transform: translateX(-50%) scale(0.84); opacity: 0.4; }
+    }
+
+    /* Frosted glass box body */
+    .gift-body {
+      position: absolute;
+      bottom: 0;
+      left: 14px;
+      width: 142px;
+      height: 108px;
+      border-radius: 16px 16px 24px 24px;
+      background: linear-gradient(155deg, rgba(255, 242, 236, 0.28) 0%, rgba(226, 182, 200, 0.18) 54%, rgba(154, 124, 196, 0.24) 100%);
+      backdrop-filter: blur(20px) saturate(155%);
+      -webkit-backdrop-filter: blur(20px) saturate(155%);
+      border: 1px solid rgba(255, 238, 230, 0.36);
+      box-shadow:
+        0 20px 44px -10px rgba(7, 4, 18, 0.68),
+        inset 0 2px 0 rgba(255, 255, 255, 0.42),
+        inset 0 -12px 24px rgba(18, 12, 34, 0.32);
+      overflow: hidden;
+    }
+
+    /* Soft sheen sweeping across glass */
+    .gift-body::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(115deg, transparent 25%, rgba(255, 255, 255, 0.24) 48%, transparent 70%);
+      transform: translateX(-140%);
+      animation: sheenSweep 4.6s ease-in-out infinite;
+    }
+
+    @keyframes sheenSweep {
+      0%, 58% { transform: translateX(-140%); }
+      100%    { transform: translateX(140%); }
+    }
+
+    /* Silky rose-gold/peach satin ribbon */
+    .ribbon-v {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 26px;
+      transform: translateX(-50%);
+      background: linear-gradient(90deg, #cf8a7e 0%, #f7ccb8 32%, #fff2ea 50%, #ebb9a6 68%, #c57e76 100%);
+      box-shadow: 0 0 14px rgba(246, 195, 175, 0.35);
+    }
+
+    /* Inner warm glow burst when lid lifts */
+    .gift-inner-light {
+      position: absolute;
+      top: 48px;
+      left: 50%;
+      width: 116px;
+      height: 36px;
+      border-radius: 9999px;
+      transform: translateX(-50%) scale(0.3);
+      background: radial-gradient(ellipse, rgba(255, 244, 224, 0.98) 0%, rgba(248, 194, 162, 0.65) 48%, transparent 76%);
+      filter: blur(8px);
+      opacity: 0;
+      transition: all 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+      pointer-events: none;
+    }
+
+    /* Lid + sculpted bow */
+    .gift-lid-wrap {
+      position: absolute;
+      top: 26px;
+      left: 6px;
+      width: 158px;
+      height: 38px;
+      transform-origin: center bottom;
+      transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.55s ease;
+    }
+
+    .gift-lid {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 14px;
+      background: linear-gradient(155deg, rgba(255, 248, 244, 0.38) 0%, rgba(236, 196, 214, 0.24) 60%, rgba(178, 148, 216, 0.26) 100%);
+      backdrop-filter: blur(22px) saturate(165%);
+      -webkit-backdrop-filter: blur(22px) saturate(165%);
+      border: 1px solid rgba(255, 244, 238, 0.42);
+      box-shadow:
+        0 12px 24px -8px rgba(7, 4, 18, 0.52),
+        inset 0 1.5px 0 rgba(255, 255, 255, 0.52);
+      overflow: hidden;
+    }
+
+    .gift-bow {
+      position: absolute;
+      top: -28px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 84px;
+      height: 36px;
+    }
+
+    .bow-loop {
+      position: absolute;
+      bottom: 2px;
+      width: 38px;
+      height: 26px;
+      border-radius: 50% 50% 42% 42% / 62% 62% 38% 38%;
+      border: 5px solid #f7c7b6;
+      background: rgba(255, 238, 230, 0.14);
+      box-shadow:
+        0 4px 14px rgba(246, 192, 170, 0.45),
+        inset 0 1px 4px rgba(255, 255, 255, 0.55);
+    }
+
+    .bow-left  { left: 4px; transform: rotate(-18deg); }
+    .bow-right { right: 4px; transform: rotate(18deg); }
+
+    .bow-knot {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 15px;
+      border-radius: 7px 7px 5px 5px;
+      background: linear-gradient(160deg, #fff6f0 0%, #f2bea8 55%, #cc867c 100%);
+      box-shadow: 0 3px 10px rgba(10, 6, 22, 0.4);
+    }
+
+    /* Opened state */
+    .gift-box.opened {
+      animation: none;
+      pointer-events: none;
+    }
+
+    .gift-box.opened .gift-lid-wrap {
+      transform: translateY(-96px) rotate(-14deg) scale(0.9);
+      opacity: 0;
+    }
+
+    .gift-box.opened .gift-inner-light {
+      opacity: 1;
+      transform: translateX(-50%) scale(1.75);
+    }
+
+    .gift-box.opened .gift-halo {
+      transform: scale(1.95);
+      opacity: 0.95;
+    }
+
+    .gift-caption {
+      margin: 44px 0 0;
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255, 246, 242, 0.84);
+      animation: gentlePulse 2.4s ease-in-out infinite;
+      transition: opacity 0.3s ease;
+    }
+
+    /* =========================================================
+       7. STAGE 3: COMFORTING NOTES APPLE-GLASS DECK
+       ========================================================= */
+    #stageNotes {
+      max-width: 376px;
+      text-align: left;
+    }
+
+    .glass-card {
+      width: 100%;
+      min-height: 288px;
+      padding: 26px 24px 22px;
+      border-radius: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      background: linear-gradient(150deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.05) 100%);
+      backdrop-filter: blur(20px) saturate(150%);
+      -webkit-backdrop-filter: blur(20px) saturate(150%);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      box-shadow:
+        0 24px 60px -16px rgba(6, 4, 18, 0.65),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      transition: border-color 0.65s ease, box-shadow 0.65s ease;
+    }
+
+    /* Special warm golden glow & halo for Note 9 */
+    .glass-card.final-note-glow {
+      border-color: rgba(255, 224, 170, 0.62);
+      box-shadow:
+        0 24px 64px -12px rgba(6, 4, 18, 0.68),
+        0 0 46px -2px rgba(255, 214, 142, 0.42),
+        inset 0 1px 0 rgba(255, 244, 218, 0.55);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .card-label {
+      font-size: 0.76rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(252, 228, 218, 0.92);
+    }
+
+    .card-counter {
+      font-size: 0.75rem;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      color: rgba(255, 255, 255, 0.52);
+    }
+
+    .note-body {
+      margin: 26px 0 24px;
+      transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease;
+    }
+
+    .note-body.exit-left  { transform: translateX(-22px); opacity: 0; }
+    .note-body.exit-right { transform: translateX(22px);  opacity: 0; }
+    .note-body.enter-left  { transform: translateX(22px);  opacity: 0; transition: none; }
+    .note-body.enter-right { transform: translateX(-22px); opacity: 0; transition: none; }
+
+    .note-text {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+      font-size: clamp(1.25rem, 5vw, 1.42rem);
+      line-height: 1.54;
+      font-weight: 400;
+      color: #fff9f6;
+    }
+
+    /* Dot progress indicators below note text */
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .dots-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.24);
+      transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.3s ease;
+    }
+
+    .dot.active {
+      width: 18px;
+      background: linear-gradient(90deg, #f8c8b4, #ebb6d6);
+      box-shadow: 0 0 10px rgba(248, 200, 180, 0.55);
+    }
+
+    .swipe-hint {
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.42);
+      letter-spacing: 0.02em;
+    }
+
+    /* Prev / Next Glass Pill Buttons */
+    .nav-row {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .glass-pill {
+      flex: 1;
+      height: 46px;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.92);
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(18px) saturate(140%);
+      -webkit-backdrop-filter: blur(18px) saturate(140%);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow:
+        0 8px 20px -8px rgba(6, 4, 18, 0.48),
+        inset 0 1px 0 rgba(255, 255, 255, 0.24);
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+
+    .glass-pill:hover {
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    .glass-pill:active {
+      transform: scale(0.94);
+    }
+
+    .glass-pill svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    /* Send a Little Warmth Pill Button */
+    .warmth-btn {
+      margin-top: 14px;
+      height: 46px;
+      padding: 0 26px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 0.84rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: #fff7f3;
+      background: linear-gradient(135deg, rgba(246, 196, 176, 0.26) 0%, rgba(232, 175, 208, 0.2) 100%);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 226, 214, 0.34);
+      box-shadow:
+        0 10px 28px -10px rgba(244, 182, 168, 0.42),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+
+    .warmth-btn:hover {
+      background: linear-gradient(135deg, rgba(246, 196, 176, 0.34) 0%, rgba(232, 175, 208, 0.28) 100%);
+    }
+
+    .warmth-btn:active {
+      transform: scale(0.93);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Deep Twilight Plum/Midnight Background + Soft Ambient Orbs -->
+  <div class="twilight-bg" aria-hidden="true">
+    <div class="orb orb-lavender"></div>
+    <div class="orb orb-peach"></div>
+    <div class="orb orb-warm"></div>
+  </div>
+
+  <!-- Lightweight Canvas for Stardust, Gift Sparkle Burst, Tap Sparkles & Floating Hearts -->
+  <canvas id="fxCanvas" aria-hidden="true"></canvas>
+
+  <!-- Always-Accessible Top-Right Frosted Circular Controls -->
+  <div class="top-controls">
+    <button id="replayBtn" class="icon-btn hidden" type="button" title="Replay gift" aria-label="Replay gift">
+      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" />
+      </svg>
+    </button>
+
+    <button id="soundBtn" class="icon-btn" type="button" title="Toggle sound" aria-label="Toggle sound">
+      <svg id="iconSoundOn" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M11 5L6 9H3v6h3l5 4V5z" />
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.54 8.46a5 5 0 010 7.07M18.36 5.64a9 9 0 010 12.72" />
+      </svg>
+      <svg id="iconSoundOff" style="display:none;" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M11 5L6 9H3v6h3l5 4V5z" />
+        <path stroke-linecap="round" stroke-linejoin="round" d="M22 9l-6 6M16 9l6 6" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Single-Screen Centered App Container -->
+  <main class="app-shell">
+
+    <!-- STAGE 1: QUICK INTRO (Active & Visible Immediately in HTML/CSS) -->
+    <section id="stageIntro" class="stage active" aria-label="Intro">
+      <h1 class="intro-title">Hey Prema ✨</h1>
+      <p class="intro-subtitle">Something small to make you smile...</p>
+      <span class="intro-hint">Tap anywhere</span>
+    </section>
+
+    <!-- STAGE 2: INTERACTIVE FROSTED-GLASS GIFT BOX -->
+    <section id="stageGift" class="stage" aria-label="Gift box">
+      <div class="gift-scene">
+        <div id="giftBox" class="gift-box" role="button" tabindex="0" aria-label="Tap to open your gift, Prema">
+          <div class="gift-halo"></div>
+          <div class="gift-shadow"></div>
+          <div class="gift-inner-light"></div>
+
+          <!-- Lid & Cute Bow -->
+          <div class="gift-lid-wrap">
+            <div class="gift-bow" aria-hidden="true">
+              <div class="bow-loop bow-left"></div>
+              <div class="bow-loop bow-right"></div>
+              <div class="bow-knot"></div>
+            </div>
+            <div class="gift-lid">
+              <div class="ribbon-v"></div>
+            </div>
+          </div>
+
+          <!-- Frosted Box Body -->
+          <div class="gift-body">
+            <div class="ribbon-v"></div>
+          </div>
+        </div>
+      </div>
+
+      <p id="giftCaption" class="gift-caption">Tap to open your gift</p>
+    </section>
+
+    <!-- STAGE 3: COMFORTING NOTES DECK (9 NOTES) -->
+    <section id="stageNotes" class="stage" aria-label="Comforting notes">
+      <article id="noteCard" class="glass-card">
+        <div class="card-header">
+          <span class="card-label">For Prema 🤍</span>
+          <span id="noteCounter" class="card-counter">1 / 9</span>
+        </div>
+
+        <div id="noteBody" class="note-body">
+          <p id="noteText" class="note-text"></p>
+        </div>
+
+        <div class="card-footer">
+          <div id="dotIndicators" class="dots-row" aria-label="Note progress"></div>
+          <span class="swipe-hint">Tap or swipe</span>
+        </div>
+      </article>
+
+      <div class="nav-row">
+        <button id="prevBtn" class="glass-pill" type="button" aria-label="Previous note">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+          </svg>
+          <span>Prev</span>
+        </button>
+
+        <button id="nextBtn" class="glass-pill" type="button" aria-label="Next note">
+          <span>Next</span>
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </button>
+      </div>
+
+      <button id="warmthBtn" class="warmth-btn" type="button">
+        <span>Send a little warmth 🤍</span>
+      </button>
+    </section>
+
+  </main>
+
+  <script>
+    (function () {
+      'use strict';
+
+      /* =========================================================
+         1. CURATED COMFORTING NOTES FOR PREMA (9 NOTES)
+         ========================================================= */
+      const NOTES = [
+        "Hey Prema, pause for a second and unclench your jaw. Drop your shoulders. You don't have to carry everything all at once.",
+        "Bad days are loud, Prema, but they don't get to decide how your story goes. You've survived every tough day before this one.",
+        "Your peace is way too expensive to spend on people who only bring noise. Protect your energy, always.",
+        "It's completely okay to feel tired right now. Rest isn't giving up—it's how you come back stronger.",
+        "You don't owe anyone a reply, an explanation, or access to your peace. Silence is a full answer.",
+        "Even on the days you feel stuck, Prema, you are still growing. Give yourself the same kindness you give everyone else.",
+        "Whenever your mind starts racing, just focus on the next small thing—a glass of water, a deep breath, one calm minute.",
+        "You have people in your corner who genuinely care about you and want to see you smiling again. You're never alone in this.",
+        "Take a deep breath, Prema. Everything will be fine! 🤍 Better, calmer days are already on their way to you."
+      ];
+
+      /* =========================================================
+         2. STATE & DOM REFERENCES
+         ========================================================= */
+      const state = {
+        stage: 'intro', // 'intro' | 'gift' | 'notes'
+        noteIndex: 0,
+        isOpeningGift: false,
+        isSwitchingNote: false,
+        soundEnabled: true,
+        introTimer: null
+      };
+
+      const stageIntro = document.getElementById('stageIntro');
+      const stageGift = document.getElementById('stageGift');
+      const stageNotes = document.getElementById('stageNotes');
+
+      const giftBox = document.getElementById('giftBox');
+      const giftCaption = document.getElementById('giftCaption');
+
+      const noteCard = document.getElementById('noteCard');
+      const noteBody = document.getElementById('noteBody');
+      const noteText = document.getElementById('noteText');
+      const noteCounter = document.getElementById('noteCounter');
+      const dotIndicators = document.getElementById('dotIndicators');
+
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const warmthBtn = document.getElementById('warmthBtn');
+
+      const soundBtn = document.getElementById('soundBtn');
+      const iconSoundOn = document.getElementById('iconSoundOn');
+      const iconSoundOff = document.getElementById('iconSoundOff');
+      const replayBtn = document.getElementById('replayBtn');
+
+      /* =========================================================
+         3. SAFE WEB AUDIO API SYNTHESIZER (ALL CALLS IN TRY/CATCH)
+         ========================================================= */
+      let audioCtx = null;
+      let sfxMasterGain = null;
+      let ambientMasterGain = null;
+      let ambientFilter = null;
+      let ambientStarted = false;
+      let ambientChordIndex = 0;
+      let ambientLoopTimer = null;
+
+      const AMBIENT_TARGET_GAIN = 0.22;
+      const SFX_TARGET_GAIN = 1.0;
+
+      // Dreamy lo-fi chord progression: Cmaj7 -> Am7 -> Fmaj7 -> G6
+      const AMBIENT_CHORDS = [
+        [130.81, 196.00, 246.94, 329.63], // Cmaj7 (C3, G3, B3, E4)
+        [110.00, 164.81, 196.00, 261.63], // Am7   (A2, E3, G3, C4)
+        [174.61, 220.00, 261.63, 329.63], // Fmaj7 (F3, A3, C4, E4)
+        [196.00, 246.94, 293.66, 329.63]  // G6    (G3, B3, D4, E4)
+      ];
+      const AMBIENT_SPARKLE_NOTES = [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50];
+
+      const KALIMBA_NOTES = [523.25, 587.33, 659.25, 783.99, 880.0, 1046.5, 880.0, 783.99];
+      let kalimbaStep = 0;
+
+      function ensureAudioGraph() {
+        try {
+          if (!audioCtx) {
+            const Ctx = window.AudioContext || window.webkitAudioContext;
+            if (!Ctx) return null;
+            audioCtx = new Ctx();
+
+            // Master bus for sound effects
+            sfxMasterGain = audioCtx.createGain();
+            sfxMasterGain.gain.setValueAtTime(state.soundEnabled ? SFX_TARGET_GAIN : 0.0001, audioCtx.currentTime);
+            sfxMasterGain.connect(audioCtx.destination);
+
+            // Warm low-pass filtered master bus for whisper-quiet ambient music
+            ambientFilter = audioCtx.createBiquadFilter();
+            ambientFilter.type = 'lowpass';
+            ambientFilter.frequency.setValueAtTime(520, audioCtx.currentTime);
+            ambientFilter.Q.setValueAtTime(0.65, audioCtx.currentTime);
+
+            ambientMasterGain = audioCtx.createGain();
+            ambientMasterGain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+
+            ambientFilter.connect(ambientMasterGain);
+            ambientMasterGain.connect(audioCtx.destination);
+          }
+
+          if (audioCtx.state === 'suspended') {
+            audioCtx.resume().catch(function () {});
+          }
+          return audioCtx;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function getAudioContext() {
+        if (!state.soundEnabled) return null;
+        return ensureAudioGraph();
+      }
+
+      // Plays one soft, overlapping pad chord (sine + triangle blend)
+      function playAmbientChord(freqs) {
+        try {
+          if (!audioCtx || !ambientFilter) return;
+          const now = audioCtx.currentTime;
+          const attack = 1.9;
+          const sustain = 3.2;
+          const release = 2.4;
+          const totalDur = attack + sustain + release;
+
+          freqs.forEach(function (freq, idx) {
+            const osc = audioCtx.createOscillator();
+            const voiceGain = audioCtx.createGain();
+
+            // Alternate sine & soft triangle for warm lo-fi texture
+            osc.type = idx % 2 === 0 ? 'sine' : 'triangle';
+            // Tiny detune for organic warmth
+            osc.frequency.setValueAtTime(freq * (1 + (idx - 1.5) * 0.0008), now);
+
+            const peak = idx === 0 ? 0.032 : 0.02;
+            voiceGain.gain.setValueAtTime(0.0001, now);
+            voiceGain.gain.linearRampToValueAtTime(peak, now + attack);
+            voiceGain.gain.setValueAtTime(peak, now + attack + sustain);
+            voiceGain.gain.exponentialRampToValueAtTime(0.0001, now + totalDur);
+
+            osc.connect(voiceGain);
+            voiceGain.connect(ambientFilter);
+
+            osc.start(now);
+            osc.stop(now + totalDur + 0.05);
+          });
+        } catch (e) {}
+      }
+
+      // Ultra-soft celesta / music-box sparkle note drifting over the pad
+      function playAmbientSparkle() {
+        try {
+          if (!audioCtx || !ambientMasterGain || !state.soundEnabled) return;
+          const now = audioCtx.currentTime;
+          const freq = AMBIENT_SPARKLE_NOTES[Math.floor(Math.random() * AMBIENT_SPARKLE_NOTES.length)];
+
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now);
+
+          gain.gain.setValueAtTime(0.0001, now);
+          gain.gain.linearRampToValueAtTime(0.022, now + 0.04);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.4);
+
+          osc.connect(gain);
+          gain.connect(ambientMasterGain);
+          osc.start(now);
+          osc.stop(now + 2.5);
+        } catch (e) {}
+      }
+
+      function scheduleAmbientStep() {
+        if (!ambientStarted) return;
+        const chord = AMBIENT_CHORDS[ambientChordIndex % AMBIENT_CHORDS.length];
+        ambientChordIndex++;
+        playAmbientChord(chord);
+
+        // Occasional gentle music-box sparkle mid-chord
+        if (Math.random() < 0.78) {
+          const delay = 1400 + Math.random() * 1800;
+          setTimeout(function () {
+            if (ambientStarted && state.soundEnabled) {
+              playAmbientSparkle();
+            }
+          }, delay);
+        }
+      }
+
+      // Starts the ambient loop and fades in over 2 seconds on first user tap
+      function startAmbientMusic() {
+        try {
+          const ctx = ensureAudioGraph();
+          if (!ctx || ambientStarted) return;
+          ambientStarted = true;
+
+          const now = ctx.currentTime;
+          ambientMasterGain.gain.cancelScheduledValues(now);
+          ambientMasterGain.gain.setValueAtTime(0.0001, now);
+
+          if (state.soundEnabled) {
+            ambientMasterGain.gain.linearRampToValueAtTime(AMBIENT_TARGET_GAIN, now + 2.0);
+          }
+
+          scheduleAmbientStep();
+          ambientLoopTimer = setInterval(scheduleAmbientStep, 5000);
+        } catch (e) {}
+      }
+
+      // Smoothly ramp both ambient music and SFX when toggling mute/unmute
+      function applyMuteState(enabled) {
+        try {
+          const ctx = ensureAudioGraph();
+          if (!ctx) return;
+          const now = ctx.currentTime;
+
+          sfxMasterGain.gain.cancelScheduledValues(now);
+          sfxMasterGain.gain.setValueAtTime(Math.max(0.0001, sfxMasterGain.gain.value), now);
+          sfxMasterGain.gain.linearRampToValueAtTime(enabled ? SFX_TARGET_GAIN : 0.0001, now + 0.25);
+
+          ambientMasterGain.gain.cancelScheduledValues(now);
+          ambientMasterGain.gain.setValueAtTime(Math.max(0.0001, ambientMasterGain.gain.value), now);
+          ambientMasterGain.gain.linearRampToValueAtTime(
+            enabled ? AMBIENT_TARGET_GAIN : 0.0001,
+            now + (enabled ? 0.8 : 0.35)
+          );
+
+          if (enabled && !ambientStarted) {
+            startAmbientMusic();
+          }
+        } catch (e) {}
+      }
+
+      // Airy pop + warm pentatonic chime arpeggio when opening the gift
+      function playGiftOpenSound() {
+        try {
+          const ctx = getAudioContext();
+          if (!ctx || !sfxMasterGain) return;
+          const now = ctx.currentTime;
+
+          // Gentle airy pop
+          const popOsc = ctx.createOscillator();
+          const popGain = ctx.createGain();
+          popOsc.type = 'sine';
+          popOsc.frequency.setValueAtTime(210, now);
+          popOsc.frequency.exponentialRampToValueAtTime(520, now + 0.08);
+          popGain.gain.setValueAtTime(0.0001, now);
+          popGain.gain.exponentialRampToValueAtTime(0.08, now + 0.015);
+          popGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
+          popOsc.connect(popGain);
+          popGain.connect(sfxMasterGain);
+          popOsc.start(now);
+          popOsc.stop(now + 0.16);
+
+          // Pentatonic chime arpeggio
+          const arpeggio = [392.0, 523.25, 659.25, 783.99, 1046.5, 1318.5];
+          arpeggio.forEach(function (freq, i) {
+            const t = now + 0.05 + i * 0.07;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, t);
+            gain.gain.setValueAtTime(0.0001, t);
+            gain.gain.exponentialRampToValueAtTime(0.048, t + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.0001, t + 1.45);
+            osc.connect(gain);
+            gain.connect(sfxMasterGain);
+            osc.start(t);
+            osc.stop(t + 1.5);
+          });
+        } catch (e) {}
+      }
+
+      // Soft kalimba/chime pluck on note switch
+      function playNotePluckSound() {
+        try {
+          const ctx = getAudioContext();
+          if (!ctx || !sfxMasterGain) return;
+          const now = ctx.currentTime;
+          const freq = KALIMBA_NOTES[kalimbaStep % KALIMBA_NOTES.length];
+          kalimbaStep++;
+
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now);
+
+          gain.gain.setValueAtTime(0.0001, now);
+          gain.gain.exponentialRampToValueAtTime(0.048, now + 0.012);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.55);
+
+          osc.connect(gain);
+          gain.connect(sfxMasterGain);
+          osc.start(now);
+          osc.stop(now + 0.6);
+        } catch (e) {}
+      }
+
+      // Warm resonant major-7th chime chord for Note 9 finale
+      function playFinaleChordSound() {
+        try {
+          const ctx = getAudioContext();
+          if (!ctx || !sfxMasterGain) return;
+          const now = ctx.currentTime;
+          // Cmaj7 voicing (C4, E4, G4, B4, E5)
+          const chord = [261.63, 329.63, 392.0, 493.88, 659.25];
+          chord.forEach(function (freq, i) {
+            const t = now + i * 0.055;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, t);
+
+            gain.gain.setValueAtTime(0.0001, t);
+            gain.gain.exponentialRampToValueAtTime(0.038, t + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.0001, t + 2.2);
+
+            osc.connect(gain);
+            gain.connect(sfxMasterGain);
+            osc.start(t);
+            osc.stop(t + 2.25);
+          });
+        } catch (e) {}
+      }
+
+      // Soft bell chime for the floating warmth hearts button
+      function playWarmthBellSound() {
+        try {
+          const ctx = getAudioContext();
+          if (!ctx || !sfxMasterGain) return;
+          const now = ctx.currentTime;
+          [659.25, 987.77].forEach(function (freq, i) {
+            const t = now + i * 0.06;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, t);
+
+            gain.gain.setValueAtTime(0.0001, t);
+            gain.gain.exponentialRampToValueAtTime(0.04, t + 0.018);
+            gain.gain.exponentialRampToValueAtTime(0.0001, t + 1.1);
+
+            osc.connect(gain);
+            gain.connect(sfxMasterGain);
+            osc.start(t);
+            osc.stop(t + 1.15);
+          });
+        } catch (e) {}
+      }
+
+      /* =========================================================
+         4. LIGHTWEIGHT FULL-SCREEN CANVAS PARTICLES
+         ========================================================= */
+      const canvas = document.getElementById('fxCanvas');
+      const ctx = canvas ? canvas.getContext('2d') : null;
+      let width = window.innerWidth;
+      let height = window.innerHeight;
+      let stardust = [];
+      let sparks = [];
+      let hearts = [];
+
+      function resizeCanvas() {
+        if (!canvas || !ctx) return;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        initStardust();
+      }
+
+      function initStardust() {
+        const count = Math.min(46, Math.max(22, Math.floor((width * height) / 20000)));
+        const colors = ['#fff8f2', '#f7c8b6', '#dbc4f5', '#f2bed4'];
+        stardust = [];
+        for (let i = 0; i < count; i++) {
+          stardust.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            r: 0.7 + Math.random() * 1.5,
+            vx: (Math.random() - 0.5) * 0.14,
+            vy: -0.07 - Math.random() * 0.16,
+            alpha: 0.2 + Math.random() * 0.42,
+            phase: Math.random() * Math.PI * 2,
+            speed: 0.012 + Math.random() * 0.016,
+            color: colors[Math.floor(Math.random() * colors.length)]
+          });
+        }
+      }
+
+      function spawnGiftBurst(x, y) {
+        const colors = ['#ffffff', '#fff2d6', '#ffd6a8', '#f8b9a0', '#f6c8dc'];
+        for (let i = 0; i < 85; i++) {
+          const angle = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * 1.6;
+          const speed = 1.6 + Math.random() * 5.6;
+          sparks.push({
+            x: x + (Math.random() - 0.5) * 30,
+            y: y + (Math.random() - 0.5) * 16,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed - 1.1,
+            gravity: 0.045,
+            drag: 0.982,
+            r: 1.5 + Math.random() * 3.2,
+            alpha: 1,
+            decay: 0.011 + Math.random() * 0.011,
+            color: colors[Math.floor(Math.random() * colors.length)]
+          });
+        }
+      }
+
+      function spawnTapSparkle(x, y) {
+        const colors = ['#ffffff', '#ffdfc8', '#f5c2d8', '#dcd0ff'];
+        for (let i = 0; i < 14; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = 0.8 + Math.random() * 2.4;
+          sparks.push({
+            x: x,
+            y: y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed - 0.4,
+            gravity: 0.015,
+            drag: 0.96,
+            r: 1.2 + Math.random() * 2.0,
+            alpha: 0.95,
+            decay: 0.026 + Math.random() * 0.018,
+            color: colors[Math.floor(Math.random() * colors.length)]
+          });
+        }
+      }
+
+      function spawnGoldenHaloBurst(rect) {
+        const colors = ['#fff8dc', '#ffe3a8', '#ffd28e', '#ffffff', '#f8d0b6'];
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        for (let i = 0; i < 40; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const rx = (rect.width * 0.46) * (0.65 + Math.random() * 0.4);
+          const ry = (rect.height * 0.46) * (0.65 + Math.random() * 0.4);
+          const speed = 0.45 + Math.random() * 1.4;
+          sparks.push({
+            x: cx + Math.cos(angle) * rx,
+            y: cy + Math.sin(angle) * ry,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed - 0.55,
+            gravity: 0.006,
+            drag: 0.985,
+            r: 1.5 + Math.random() * 2.6,
+            alpha: 0.95,
+            decay: 0.01 + Math.random() * 0.01,
+            color: colors[Math.floor(Math.random() * colors.length)]
+          });
+        }
+      }
+
+      function spawnWarmthHearts(x, y) {
+        const colors = ['#fff6f2', '#f9c2b8', '#f5a9c4', '#ffd8be'];
+        for (let i = 0; i < 12; i++) {
+          hearts.push({
+            x: x + (Math.random() - 0.5) * 110,
+            y: y + (Math.random() - 0.5) * 14,
+            vx: (Math.random() - 0.5) * 0.65,
+            vy: -1.4 - Math.random() * 1.9,
+            swayAmp: 0.4 + Math.random() * 0.8,
+            swayPhase: Math.random() * Math.PI * 2,
+            swaySpeed: 0.03 + Math.random() * 0.03,
+            size: 7 + Math.random() * 7,
+            alpha: 0.96,
+            decay: 0.0075 + Math.random() * 0.005,
+            color: colors[Math.floor(Math.random() * colors.length)]
+          });
+        }
+        spawnTapSparkle(x, y);
+      }
+
+      function drawHeart(x, y, size, color, alpha) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.globalAlpha = Math.max(0, alpha);
+        ctx.fillStyle = color;
+        ctx.shadowBlur = 12;
+        ctx.shadowColor = color;
+        ctx.beginPath();
+        const s = size * 0.5;
+        ctx.moveTo(0, s * 0.4);
+        ctx.bezierCurveTo(-s, -s * 0.4, -s * 1.2, s * 0.6, 0, s * 1.4);
+        ctx.bezierCurveTo(s * 1.2, s * 0.6, s, -s * 0.4, 0, s * 0.4);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function animateCanvas() {
+        if (!ctx) return;
+        ctx.clearRect(0, 0, width, height);
+
+        // Stardust
+        for (let i = 0; i < stardust.length; i++) {
+          const s = stardust[i];
+          s.x += s.vx;
+          s.y += s.vy;
+          s.phase += s.speed;
+          if (s.y < -8) s.y = height + 8;
+          if (s.x < -8) s.x = width + 8;
+          if (s.x > width + 8) s.x = -8;
+
+          const a = s.alpha * (0.55 + 0.45 * Math.sin(s.phase));
+          ctx.save();
+          ctx.globalAlpha = Math.max(0.05, a);
+          ctx.fillStyle = s.color;
+          ctx.shadowBlur = 6;
+          ctx.shadowColor = s.color;
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+
+        // Sparkles
+        for (let i = sparks.length - 1; i >= 0; i--) {
+          const p = sparks[i];
+          p.vx *= p.drag;
+          p.vy = p.vy * p.drag + p.gravity;
+          p.x += p.vx;
+          p.y += p.vy;
+          p.alpha -= p.decay;
+
+          if (p.alpha <= 0.01) {
+            sparks.splice(i, 1);
+            continue;
+          }
+
+          ctx.save();
+          ctx.globalAlpha = Math.max(0, p.alpha);
+          ctx.fillStyle = p.color;
+          ctx.shadowBlur = 9;
+          ctx.shadowColor = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+
+        // Floating hearts
+        for (let i = hearts.length - 1; i >= 0; i--) {
+          const h = hearts[i];
+          h.swayPhase += h.swaySpeed;
+          h.x += h.vx + Math.sin(h.swayPhase) * h.swayAmp;
+          h.y += h.vy;
+          h.alpha -= h.decay;
+
+          if (h.alpha <= 0.01) {
+            hearts.splice(i, 1);
+            continue;
+          }
+          drawHeart(h.x, h.y, h.size, h.color, h.alpha);
+        }
+
+        requestAnimationFrame(animateCanvas);
+      }
+
+      window.addEventListener('resize', resizeCanvas);
+      resizeCanvas();
+      animateCanvas();
+
+      /* =========================================================
+         5. STAGE MANAGEMENT (SIMPLE CLASS TOGGLES + SETTIMEOUT)
+         ========================================================= */
+      function setStage(name) {
+        if (state.introTimer) {
+          clearTimeout(state.introTimer);
+          state.introTimer = null;
+        }
+        state.stage = name;
+
+        stageIntro.classList.toggle('active', name === 'intro');
+        stageGift.classList.toggle('active', name === 'gift');
+        stageNotes.classList.toggle('active', name === 'notes');
+        replayBtn.classList.toggle('hidden', name !== 'notes');
+
+        if (name === 'gift') {
+          state.isOpeningGift = false;
+          giftBox.classList.remove('wiggle', 'opened');
+          giftCaption.style.opacity = '1';
+        }
+      }
+
+      // Auto-advance Stage 1 after 2.2s
+      state.introTimer = setTimeout(function () {
+        if (state.stage === 'intro') {
+          setStage('gift');
+        }
+      }, 2200);
+
+      // Unlock & softly fade in ambient music on the very first interaction anywhere
+      function handleFirstUserInteraction(e) {
+        if (e && e.target && e.target.closest('#soundBtn')) return;
+        startAmbientMusic();
+      }
+      document.addEventListener('pointerdown', handleFirstUserInteraction, { once: true });
+      document.addEventListener('keydown', handleFirstUserInteraction, { once: true });
+
+      // Tap anywhere during Stage 1 to advance immediately
+      document.addEventListener('click', function (e) {
+        if (!e.target.closest('#soundBtn')) {
+          startAmbientMusic();
+        }
+        if (state.stage === 'intro' && !e.target.closest('#soundBtn')) {
+          setStage('gift');
+        }
+      });
+
+      /* =========================================================
+         6. GIFT BOX UNWRAPPING FLOW
+         ========================================================= */
+      function openGift() {
+        if (state.stage !== 'gift' || state.isOpeningGift) return;
+        state.isOpeningGift = true;
+        startAmbientMusic();
+
+        // Step 1: Playful anticipation wiggle
+        giftBox.classList.add('wiggle');
+
+        // Step 2: Lid pops off + sparkle burst + chime arpeggio
+        setTimeout(function () {
+          giftBox.classList.remove('wiggle');
+          giftBox.classList.add('opened');
+          giftCaption.style.opacity = '0';
+
+          const rect = giftBox.getBoundingClientRect();
+          spawnGiftBurst(rect.left + rect.width / 2, rect.top + rect.height * 0.42);
+          playGiftOpenSound();
+        }, 280);
+
+        // Step 3: Smoothly transition to Stage 3 (~750ms after lid opens)
+        setTimeout(function () {
+          state.noteIndex = 0;
+          renderNote();
+          setStage('notes');
+        }, 1030);
+      }
+
+      giftBox.addEventListener('click', function (e) {
+        e.stopPropagation();
+        openGift();
+      });
+
+      giftBox.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openGift();
+        }
+      });
+
+      /* =========================================================
+         7. COMFORTING NOTES DECK LOGIC
+         ========================================================= */
+      function buildDots() {
+        dotIndicators.innerHTML = '';
+        for (let i = 0; i < NOTES.length; i++) {
+          const dot = document.createElement('span');
+          dot.className = 'dot' + (i === state.noteIndex ? ' active' : '');
+          dotIndicators.appendChild(dot);
+        }
+      }
+
+      function renderNote() {
+        noteText.textContent = NOTES[state.noteIndex];
+        noteCounter.textContent = (state.noteIndex + 1) + ' / ' + NOTES.length;
+
+        const isFinal = state.noteIndex === NOTES.length - 1;
+        noteCard.classList.toggle('final-note-glow', isFinal);
+
+        const dots = dotIndicators.children;
+        for (let i = 0; i < dots.length; i++) {
+          dots[i].classList.toggle('active', i === state.noteIndex);
+        }
+      }
+
+      function switchNote(direction, tapX, tapY) {
+        if (state.stage !== 'notes' || state.isSwitchingNote) return;
+        state.isSwitchingNote = true;
+
+        const nextIndex = (state.noteIndex + direction + NOTES.length) % NOTES.length;
+        const landingOnFinal = nextIndex === NOTES.length - 1;
+
+        if (!landingOnFinal) {
+          playNotePluckSound();
+        }
+
+        if (typeof tapX === 'number' && typeof tapY === 'number') {
+          spawnTapSparkle(tapX, tapY);
+        } else {
+          const r = noteCard.getBoundingClientRect();
+          spawnTapSparkle(r.left + r.width / 2, r.top + r.height / 2);
+        }
+
+        noteBody.classList.add(direction > 0 ? 'exit-left' : 'exit-right');
+
+        setTimeout(function () {
+          state.noteIndex = nextIndex;
+          renderNote();
+
+          if (landingOnFinal) {
+            playFinaleChordSound();
+            spawnGoldenHaloBurst(noteCard.getBoundingClientRect());
+          }
+
+          noteBody.classList.remove('exit-left', 'exit-right');
+          noteBody.classList.add(direction > 0 ? 'enter-left' : 'enter-right');
+          void noteBody.offsetWidth;
+          noteBody.classList.remove('enter-left', 'enter-right');
+
+          setTimeout(function () {
+            state.isSwitchingNote = false;
+          }, 220);
+        }, 190);
+      }
+
+      // Tap card to advance
+      noteCard.addEventListener('click', function (e) {
+        switchNote(1, e.clientX, e.clientY);
+      });
+
+      prevBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        switchNote(-1, e.clientX, e.clientY);
+      });
+
+      nextBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        switchNote(1, e.clientX, e.clientY);
+      });
+
+      // Touch swipe left / right on note card
+      let touchStartX = 0;
+      let touchStartY = 0;
+
+      noteCard.addEventListener('touchstart', function (e) {
+        if (e.touches.length === 1) {
+          touchStartX = e.touches[0].clientX;
+          touchStartY = e.touches[0].clientY;
+        }
+      }, { passive: true });
+
+      noteCard.addEventListener('touchend', function (e) {
+        if (e.changedTouches.length === 1) {
+          const endX = e.changedTouches[0].clientX;
+          const endY = e.changedTouches[0].clientY;
+          const dx = endX - touchStartX;
+          const dy = endY - touchStartY;
+          if (Math.abs(dx) > 36 && Math.abs(dx) > Math.abs(dy)) {
+            switchNote(dx < 0 ? 1 : -1, endX, endY);
+          }
+        }
+      }, { passive: true });
+
+      // Keyboard arrow support
+      document.addEventListener('keydown', function (e) {
+        if (state.stage !== 'notes') return;
+        if (e.key === 'ArrowRight') switchNote(1);
+        if (e.key === 'ArrowLeft') switchNote(-1);
+      });
+
+      // Floating warmth hearts button
+      warmthBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        const rect = warmthBtn.getBoundingClientRect();
+        spawnWarmthHearts(rect.left + rect.width / 2, rect.top);
+        playWarmthBellSound();
+      });
+
+      /* =========================================================
+         8. TOP-RIGHT SOUND TOGGLE & REPLAY CONTROLS
+         ========================================================= */
+      soundBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        state.soundEnabled = !state.soundEnabled;
+        iconSoundOn.style.display = state.soundEnabled ? 'block' : 'none';
+        iconSoundOff.style.display = state.soundEnabled ? 'none' : 'block';
+        applyMuteState(state.soundEnabled);
+        if (state.soundEnabled) {
+          playNotePluckSound();
+        }
+      });
+
+      replayBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        setStage('gift');
+      });
+
+      // Initialize note dots and first note immediately
+      buildDots();
+      renderNote();
+    })();
+  </script>
+</body>
+</html>
